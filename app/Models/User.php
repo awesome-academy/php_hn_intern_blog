@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Jobs\SendMailResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
 
 class User extends Authenticatable
 {
@@ -62,5 +64,10 @@ class User extends Authenticatable
     public function getFullNameAttribute()
     {
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        dispatch(new SendMailResetPassword($this, $token));
     }
 }
